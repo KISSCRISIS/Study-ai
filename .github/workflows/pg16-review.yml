@@ -1,0 +1,50 @@
+name: ALBASHIR PostgreSQL 16 Synthetic Review
+
+on:
+  push:
+    branches:
+      - review/albashir-quota-v6-2-20261113
+    paths:
+      - 'ALBASHIR_QUOTA_REVIEW_20261113/**'
+      - '.github/workflows/pg16-review.yml'
+  pull_request:
+    branches:
+      - review/albashir-quota-v6-2-20261113
+    paths:
+      - 'ALBASHIR_QUOTA_REVIEW_20261113/**'
+      - '.github/workflows/pg16-review.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: albashir-review-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pg16-synthetic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exactly the tested revision
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Execute tests inside a network-disabled disposable PostgreSQL 16 container
+        run: bash ALBASHIR_QUOTA_REVIEW_20261113/ci/run_ci.sh
+      - name: Publish synthetic-only test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: albashir-pg16-review-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ALBASHIR_QUOTA_REVIEW_20261113/ci/logs/
+          if-no-files-found: warn
+          retention-days: 7
