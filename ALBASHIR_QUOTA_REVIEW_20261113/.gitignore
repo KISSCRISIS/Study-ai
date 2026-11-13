@@ -1,0 +1,6 @@
+# Only generated inside the ephemeral CI runner, never committed.
+/ci/generated/
+/ci/logs/
+/ci/tests/*.diff
+**/__pycache__/
+*.py[cod]
