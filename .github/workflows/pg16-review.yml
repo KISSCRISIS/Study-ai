@@ -4,12 +4,14 @@ on:
   push:
     branches:
       - review/albashir-quota-v6-2-20261113
+      - fix/albashir-pg16-ci-isolation-20261114
     paths:
       - 'ALBASHIR_QUOTA_REVIEW_20261113/**'
       - '.github/workflows/pg16-review.yml'
   pull_request:
     branches:
       - review/albashir-quota-v6-2-20261113
+      - fix/albashir-pg16-ci-isolation-20261114
     paths:
       - 'ALBASHIR_QUOTA_REVIEW_20261113/**'
       - '.github/workflows/pg16-review.yml'
