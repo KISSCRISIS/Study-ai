@@ -86,7 +86,10 @@ BEGIN
   END IF;
   IF EXISTS (
     SELECT 1 FROM private.new_photo_upload_quotas
-    WHERE scope_key IN ('emp:q14f_guard', 'src:q14f_guard') AND attempt_count IS DISTINCT FROM 2
+    WHERE scope_key = 'emp:q14f_guard' AND attempt_count IS DISTINCT FROM 2
+  ) OR EXISTS (
+    SELECT 1 FROM private.new_photo_upload_quotas
+    WHERE scope_key = 'src:q14f_guard' AND attempt_count IS DISTINCT FROM 3
   ) OR EXISTS (
     SELECT 1 FROM private.new_photo_upload_quotas
     WHERE scope_key = 'global' AND attempt_count IS DISTINCT FROM 5
