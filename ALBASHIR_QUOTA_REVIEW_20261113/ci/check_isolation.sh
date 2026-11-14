@@ -18,7 +18,7 @@ PURPOSE=$(docker inspect --format '{{index .Config.Labels "org.openai.albashir.p
 [[ "$PURPOSE" == synthetic-review-only ]] || fail 'container purpose mismatch'
 PORTS=$(docker port "$CID" 2>&1) && [[ -z "$PORTS" ]] || fail 'PostgreSQL container exposes a host port'
 
-RESULT=$(docker exec "$CID" psql -X -A -t -F '|' -v ON_ERROR_STOP=1 -U postgres -d "$DB" \
+RESULT=$(docker exec "$CID" psql -h 127.0.0.1 -X -A -t -F '|' -v ON_ERROR_STOP=1 -U postgres -d "$DB" \
   -c "SELECT current_database(), current_setting('server_version_num'), session_user, current_setting('data_directory')") || fail 'database/container probe failed'
 IFS='|' read -r ACTUAL_DB VERSION ROLE DATA_DIR <<< "$RESULT"
 [[ "$ACTUAL_DB" == "$DB" ]] || fail 'connected to unexpected database'
