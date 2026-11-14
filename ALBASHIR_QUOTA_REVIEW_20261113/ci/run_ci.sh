@@ -28,6 +28,8 @@ python3 "$CI_DIR/fix_tests.py" > "$LOG_DIR/fix_tests.log" 2>&1 || fail 'Q14f/g/h
 node --check "$CI_DIR/verifier/VERIFY_REPAIRS_STATIC.cjs" > "$LOG_DIR/node_check.log" 2>&1 || fail 'verifier JavaScript syntax check failed'
 node "$CI_DIR/verifier/VERIFY_REPAIRS_STATIC.cjs" --self-test > "$LOG_DIR/static_negative_tests.log" 2>&1 || fail 'negative mutation checks failed'
 node "$CI_DIR/verifier/VERIFY_REPAIRS_STATIC.cjs" > "$LOG_DIR/static_verifier.log" 2>&1 || fail 'static verifier failed'
+[[ -x "$CI_DIR/check_isolation.sh" ]] || fail 'check_isolation.sh must have Git executable mode 100755'
+printf 'PASS\tcheck_isolation.sh executable mode verified\n' | tee -a "$LOG_DIR/RESULTS.tsv"
 printf 'PASS\tstatic verifier and mutation checks (not a PG16 result)\n' | tee -a "$LOG_DIR/RESULTS.tsv"
 
 CID=""
