@@ -53,7 +53,7 @@ export ALBASHIR_CREATED_CONTAINER_ID="$CID"
 
 ready=0
 for _ in $(seq 1 45); do
-  if docker exec "$CID" pg_isready -U postgres -d postgres >/dev/null 2>&1; then ready=1; break; fi
+  if docker exec "$CID" pg_isready -h 127.0.0.1 -U postgres -d postgres >/dev/null 2>&1; then ready=1; break; fi
   sleep 1
 done
 [[ "$ready" -eq 1 ]] || fail 'ephemeral PostgreSQL did not become ready'
