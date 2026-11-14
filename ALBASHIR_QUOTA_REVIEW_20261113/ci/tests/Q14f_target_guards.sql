@@ -35,7 +35,8 @@ BEGIN
     PERFORM public.release_new_photo_upload_quota('14f00000-0000-4000-8000-00000000014e'::uuid);
   EXCEPTION WHEN SQLSTATE 'P0001' THEN
     GET STACKED DIAGNOSTICS v_sqlstate = RETURNED_SQLSTATE, v_message = MESSAGE_TEXT;
-    v_caught := position('deferrable constraint' IN lower(v_message)) > 0;
+    v_caught := position('deferrable' IN lower(v_message)) > 0
+      AND position('q14f_quota_target_deferred_uq' IN lower(v_message)) > 0;
   END;
   IF NOT v_caught OR v_sqlstate IS DISTINCT FROM 'P0001' THEN
     RAISE EXCEPTION 'Q14f target-quota guard FAILED: expected P0001 deferrable-constraint rejection; got state=% message=%', v_sqlstate, v_message;
@@ -60,7 +61,8 @@ BEGIN
     PERFORM public.release_new_photo_upload_quota('14f00000-0000-4000-8000-00000000014e'::uuid);
   EXCEPTION WHEN SQLSTATE 'P0001' THEN
     GET STACKED DIAGNOSTICS v_sqlstate = RETURNED_SQLSTATE, v_message = MESSAGE_TEXT;
-    v_caught := position('deferrable constraint' IN lower(v_message)) > 0;
+    v_caught := position('deferrable' IN lower(v_message)) > 0
+      AND position('q14f_claim_target_deferred_uq' IN lower(v_message)) > 0;
   END;
   IF NOT v_caught OR v_sqlstate IS DISTINCT FROM 'P0001' THEN
     RAISE EXCEPTION 'Q14f target-claims guard FAILED: expected P0001 deferrable-constraint rejection; got state=% message=%', v_sqlstate, v_message;
